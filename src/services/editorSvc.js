@@ -2,7 +2,7 @@ import Vue from 'vue';
 import DiffMatchPatch from 'diff-match-patch';
 import Prism from 'prismjs';
 import markdownItPandocRenderer from 'markdown-it-pandoc-renderer';
-import cledit from './editor/cledit';
+// import cledit from './editor/cledit';
 import pagedown from '../libs/pagedown';
 import htmlSanitizer from '../libs/htmlSanitizer';
 import markdownConversionSvc from './markdownConversionSvc';
@@ -422,102 +422,102 @@ const editorSvc = Object.assign(new Vue(), editorSvcDiscussions, editorSvcUtils,
      * Inline images
      */
 
-    const imgCache = Object.create(null);
+    // const imgCache = Object.create(null);
 
-    const hashImgElt = imgElt => `${imgElt.src}:${imgElt.width || -1}:${imgElt.height || -1}`;
+    // const hashImgElt = imgElt => `${imgElt.src}:${imgElt.width || -1}:${imgElt.height || -1}`;
 
-    const addToImgCache = (imgElt) => {
-      const hash = hashImgElt(imgElt);
-      let entries = imgCache[hash];
-      if (!entries) {
-        entries = [];
-        imgCache[hash] = entries;
-      }
-      entries.push(imgElt);
-    };
+    // const addToImgCache = (imgElt) => {
+    //   const hash = hashImgElt(imgElt);
+    //   let entries = imgCache[hash];
+    //   if (!entries) {
+    //     entries = [];
+    //     imgCache[hash] = entries;
+    //   }
+    //   entries.push(imgElt);
+    // };
 
-    const getFromImgCache = (imgEltsToCache) => {
-      const hash = hashImgElt(imgEltsToCache);
-      const entries = imgCache[hash];
-      if (!entries) {
-        return null;
-      }
-      let imgElt;
-      return entries
-        .some((entry) => {
-          if (this.editorElt.contains(entry)) {
-            return false;
-          }
-          imgElt = entry;
-          return true;
-        }) && imgElt;
-    };
+    // const getFromImgCache = (imgEltsToCache) => {
+    //   const hash = hashImgElt(imgEltsToCache);
+    //   const entries = imgCache[hash];
+    //   if (!entries) {
+    //     return null;
+    //   }
+    //   let imgElt;
+    //   return entries
+    //     .some((entry) => {
+    //       if (this.editorElt.contains(entry)) {
+    //         return false;
+    //       }
+    //       imgElt = entry;
+    //       return true;
+    //     }) && imgElt;
+    // };
 
-    const triggerImgCacheGc = cledit.Utils.debounce(() => {
-      Object.entries(imgCache).forEach(([src, entries]) => {
-        // Filter entries that are not attached to the DOM
-        const filteredEntries = entries.filter(imgElt => this.editorElt.contains(imgElt));
-        if (filteredEntries.length) {
-          imgCache[src] = filteredEntries;
-        } else {
-          delete imgCache[src];
-        }
-      });
-    }, 100);
+    // const triggerImgCacheGc = cledit.Utils.debounce(() => {
+    //   Object.entries(imgCache).forEach(([src, entries]) => {
+    //     // Filter entries that are not attached to the DOM
+    //     const filteredEntries = entries.filter(imgElt => this.editorElt.contains(imgElt));
+    //     if (filteredEntries.length) {
+    //       imgCache[src] = filteredEntries;
+    //     } else {
+    //       delete imgCache[src];
+    //     }
+    //   });
+    // }, 100);
 
-    let imgEltsToCache = [];
-    if (store.getters['data/computedSettings'].editor.inlineImages) {
-      this.clEditor.highlighter.on('sectionHighlighted', (section) => {
-        section.elt.getElementsByClassName('token img').cl_each((imgTokenElt) => {
-          const srcElt = imgTokenElt.querySelector('.token.cl-src');
-          if (srcElt) {
-            // Create an img element before the .img.token and wrap both elements
-            // into a .token.img-wrapper
-            const imgElt = document.createElement('img');
-            imgElt.style.display = 'none';
-            const uri = srcElt.textContent;
-            if (!/^unsafe/.test(htmlSanitizer.sanitizeUri(uri, true))) {
-              imgElt.onload = () => {
-                imgElt.style.display = '';
-              };
-              imgElt.src = uri;
-              // Take img size into account
-              const sizeElt = imgTokenElt.querySelector('.token.cl-size');
-              if (sizeElt) {
-                const match = sizeElt.textContent.match(/=(\d*)x(\d*)/);
-                if (match[1]) {
-                  imgElt.width = parseInt(match[1], 10);
-                }
-                if (match[2]) {
-                  imgElt.height = parseInt(match[2], 10);
-                }
-              }
-              imgEltsToCache.push(imgElt);
-            }
-            const imgTokenWrapper = document.createElement('span');
-            imgTokenWrapper.className = 'token img-wrapper';
-            imgTokenElt.parentNode.insertBefore(imgTokenWrapper, imgTokenElt);
-            imgTokenWrapper.appendChild(imgElt);
-            imgTokenWrapper.appendChild(imgTokenElt);
-          }
-        });
-      });
-    }
+    // let imgEltsToCache = [];
+    // if (store.getters['data/computedSettings'].editor.inlineImages) {
+    //   this.clEditor.highlighter.on('sectionHighlighted', (section) => {
+    //     section.elt.getElementsByClassName('token img').cl_each((imgTokenElt) => {
+    //       const srcElt = imgTokenElt.querySelector('.token.cl-src');
+    //       if (srcElt) {
+    //         // Create an img element before the .img.token and wrap both elements
+    //         // into a .token.img-wrapper
+    //         const imgElt = document.createElement('img');
+    //         imgElt.style.display = 'none';
+    //         const uri = srcElt.textContent;
+    //         if (!/^unsafe/.test(htmlSanitizer.sanitizeUri(uri, true))) {
+    //           imgElt.onload = () => {
+    //             imgElt.style.display = '';
+    //           };
+    //           imgElt.src = uri;
+    //           // Take img size into account
+    //           const sizeElt = imgTokenElt.querySelector('.token.cl-size');
+    //           if (sizeElt) {
+    //             const match = sizeElt.textContent.match(/=(\d*)x(\d*)/);
+    //             if (match[1]) {
+    //               imgElt.width = parseInt(match[1], 10);
+    //             }
+    //             if (match[2]) {
+    //               imgElt.height = parseInt(match[2], 10);
+    //             }
+    //           }
+    //           imgEltsToCache.push(imgElt);
+    //         }
+    //         const imgTokenWrapper = document.createElement('span');
+    //         imgTokenWrapper.className = 'token img-wrapper';
+    //         imgTokenElt.parentNode.insertBefore(imgTokenWrapper, imgTokenElt);
+    //         imgTokenWrapper.appendChild(imgElt);
+    //         imgTokenWrapper.appendChild(imgTokenElt);
+    //       }
+    //     });
+    //   });
+    // }
 
-    this.clEditor.highlighter.on('highlighted', () => {
-      imgEltsToCache.forEach((imgElt) => {
-        const cachedImgElt = getFromImgCache(imgElt);
-        if (cachedImgElt) {
-          // Found a previously loaded image that has just been released
-          imgElt.parentNode.replaceChild(cachedImgElt, imgElt);
-        } else {
-          addToImgCache(imgElt);
-        }
-      });
-      imgEltsToCache = [];
-      // Eject released images from cache
-      triggerImgCacheGc();
-    });
+    // this.clEditor.highlighter.on('highlighted', () => {
+    //   imgEltsToCache.forEach((imgElt) => {
+    //     const cachedImgElt = getFromImgCache(imgElt);
+    //     if (cachedImgElt) {
+    //       // Found a previously loaded image that has just been released
+    //       imgElt.parentNode.replaceChild(cachedImgElt, imgElt);
+    //     } else {
+    //       addToImgCache(imgElt);
+    //     }
+    //   });
+    //   imgEltsToCache = [];
+    //   // Eject released images from cache
+    //   triggerImgCacheGc();
+    // });
 
     this.clEditor.on('contentChanged', (content, diffs, sectionList) => {
       newSectionList = sectionList;
